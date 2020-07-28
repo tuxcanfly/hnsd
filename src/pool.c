@@ -253,9 +253,6 @@ hsk_pool_set_seeds(hsk_pool_t *pool, const char *seeds) {
       if (!hsk_addr_from_string(&addr, seed, HSK_PORT))
         return false;
 
-      if (!hsk_addr_has_key(&addr))
-        return false;
-
       if (!hsk_addrman_add_addr(&pool->am, &addr))
         return false;
 
@@ -367,11 +364,6 @@ hsk_pool_refill(hsk_pool_t *pool) {
     if (!hsk_pool_getaddr(pool, &addr)) {
       hsk_pool_debug(pool, "could not find suitable addr\n");
       break;
-    }
-
-    if (!hsk_ec_verify_pubkey(pool->ec, addr.key)) {
-      hsk_addrman_remove_addr(&pool->am, &addr);
-      continue;
     }
 
     hsk_peer_t *peer = hsk_peer_alloc(pool);
@@ -1037,6 +1029,9 @@ hsk_peer_close(hsk_peer_t *peer) {
   switch (peer->state) {
     case HSK_STATE_DISCONNECTING:
       return HSK_SUCCESS;
+    case HSK_STATE_HANDSHAKE:
+      hsk_peer_log(peer, "closing peer\n");
+      break;
     case HSK_STATE_READING:
       assert(uv_read_stop((uv_stream_t *)&peer->socket) == 0);
     case HSK_STATE_CONNECTED:
