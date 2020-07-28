@@ -391,6 +391,7 @@ hsk_pool_refill(hsk_pool_t *pool) {
     }
 
     hsk_peer_push(peer);
+    hsk_peer_send_getheaders(peer, NULL);
   }
 
   return HSK_SUCCESS;
