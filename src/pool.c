@@ -391,7 +391,6 @@ hsk_pool_refill(hsk_pool_t *pool) {
     }
 
     hsk_peer_push(peer);
-    hsk_peer_send_getheaders(peer, NULL);
   }
 
   return HSK_SUCCESS;
@@ -1214,7 +1213,13 @@ hsk_peer_handle_version(hsk_peer_t *peer, const hsk_version_msg_t *msg) {
   hsk_timedata_add(&pool->td, &peer->addr, msg->time);
   hsk_addrman_mark_ack(&pool->am, &peer->addr, msg->services);
 
-  return hsk_peer_send_verack(peer);
+  
+  int rc = hsk_peer_send_verack(peer);
+
+  if (rc != HSK_SUCCESS)
+    return rc;
+
+  return hsk_peer_send_getheaders(peer, NULL);
 }
 
 static int
