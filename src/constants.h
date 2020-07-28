@@ -15,7 +15,7 @@
 #define HSK_MAX_MESSAGE (8 * 1000 * 1000)
 #define HSK_USER_AGENT "/hnsd:0.0.0/"
 #define HSK_PROTO_VERSION 3
-#define HSK_SERVICES 1
+#define HSK_SERVICES 0
 #define HSK_MAX_DATA_SIZE 668
 #define HSK_MAX_VALUE_SIZE 512
 
@@ -51,7 +51,7 @@ static const char HSK_KSK_2017[] = ". DS 20326 8 2 "
 #define HSK_NS_PORT 5359
 #define HSK_RS_PORT 5360
 
-#define HSK_BITS 0x1d00ffff
+#define HSK_BITS 0x1c00ffff
 
 static const uint8_t HSK_LIMIT[32] = {
   0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
