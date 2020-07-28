@@ -46,7 +46,7 @@ static const char HSK_KSK_2017[] = ". DS 20326 8 2 "
  */
 
 #define HSK_NETWORK_NAME "main"
-#define HSK_MAGIC 0xebf10ad8
+#define HSK_MAGIC 0x5b6ef2d3
 #define HSK_PORT 12038
 #define HSK_NS_PORT 5359
 #define HSK_RS_PORT 5360
