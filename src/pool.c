@@ -266,9 +266,7 @@ hsk_pool_set_seeds(hsk_pool_t *pool, const char *seeds) {
       memcpy(&seed[0], &seeds[start], size);
       seed[size] = '\0';
 
-      const uint16_t port = strchr(seed, '@') ? HSK_BRONTIDE_PORT : HSK_PORT;
-
-      if (!hsk_addr_from_string(&addr, seed, port))
+      if (!hsk_addr_from_string(&addr, seed, 0))
         return false;
 
       if (!hsk_addrman_add_addr(&pool->am, &addr))
