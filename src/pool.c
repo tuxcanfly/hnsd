@@ -1762,31 +1762,28 @@ after_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf) {
   if (!peer)
     return;
 
-  int r;
   if (peer->brontide != NULL) {
-    r = hsk_brontide_on_read(
+    int r = hsk_brontide_on_read(
         peer->brontide,
         (uint8_t *)buf->base,
         (size_t)nread
         );
+    if (r != HSK_SUCCESS) {
+      hsk_peer_log(peer, "brontide_on_read failed: %s\n", hsk_strerror(r));
+      hsk_peer_destroy(peer);
+      return;
+    }
   } else {
     hsk_peer_on_read(
         peer,
         (uint8_t *)buf->base,
         (size_t)nread
         );
-    r = HSK_SUCCESS;
   }
 
   if (nread < 0) {
     if (nread != UV_EOF)
       hsk_peer_log(peer, "read error: %s\n", uv_strerror(nread));
-    hsk_peer_destroy(peer);
-    return;
-  }
-
-  if (r != HSK_SUCCESS) {
-    hsk_peer_log(peer, "brontide_on_read failed: %s\n", hsk_strerror(r));
     hsk_peer_destroy(peer);
     return;
   }
