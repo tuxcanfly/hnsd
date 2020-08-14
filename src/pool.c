@@ -1346,6 +1346,9 @@ hsk_peer_handle_addr(hsk_peer_t *peer, hsk_addr_msg_t *msg) {
     if (addr->addr.port == 0)
       continue;
 
+    if (hsk_addr_has_key(&addr->addr))
+      continue;
+
     hsk_addrman_add_na(&pool->am, addr);
   }
 
