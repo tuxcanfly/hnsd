@@ -1118,7 +1118,7 @@ hsk_peer_write(
   if (peer->brontide != NULL) {
     rc = hsk_brontide_write(peer->brontide, data, data_len);
   } else {
-    rc = hsk_peer_write_raw(peer, (uint8_t *)data, data_len, true);
+    rc = hsk_peer_write_raw(peer, data, data_len, true);
  }
   return rc;
 }
