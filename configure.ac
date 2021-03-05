@@ -160,6 +160,14 @@ AC_ARG_WITH([unbound],
   [libunbound_path=$withval],
   [libunbound_path=yes])
 
+AC_ARG_WITH([leveldb],
+  [AS_HELP_STRING(
+    [--with-leveldb=path]
+    [Use libleveldb installed at path. Default is to search system paths.]
+  )],
+  [libleveldb=$withval],
+  [libleveldb_path=yes])
+
 AC_CHECK_TYPES([__int128])
 
 AC_MSG_CHECKING([for __builtin_expect])
@@ -338,6 +346,27 @@ esac
 AC_SUBST(LIB_UNBOUND, ${LIB_UNBOUND})
 AC_SUBST(INC_UNBOUND, ${INC_UNBOUND})
 
+dnl Find libleveldb, and define LIB_LEVELDB/INC_LEVELDB for hnsd.
+dnl Don't add these to the default libs/includes, they're not needed by the
+dnl other targets.
+case $libleveldb_path in
+  no)
+    AC_MSG_ERROR([libleveldb is required])
+    ;;
+  yes)
+    AC_CHECK_LIB(leveldb, leveldb_open, LIB_LEVELDB="-lleveldb",
+      AC_MSG_ERROR([Unable to find libleveldb]))
+    AC_CHECK_HEADER(leveldb/c.h, INC_LEVELDB="",
+      AC_MSG_ERROR([Unable to found leveldb/c.h]))
+    ;;
+  *)
+    LIB_LEVELDB="-L${libleveldb_path}/lib -lleveldb"
+    INC_LEVELDB="-I${libleveldb_path}/include"
+    ;;
+esac
+AC_SUBST(LIB_LEVELDB, ${LIB_LEVELDB})
+AC_SUBST(INC_LEVELDB, ${INC_LEVELDB})
+
 dnl Platform-specific libraries
 case "${host_os}" in
   mingw*)
@@ -352,6 +381,8 @@ AC_MSG_NOTICE([Using field implementation: $set_field])
 AC_MSG_NOTICE([Using scalar implementation: $set_scalar])
 AC_MSG_NOTICE([Linker flags for libunbound: $LIB_UNBOUND])
 AC_MSG_NOTICE([Compiler flags for libunbound: $INC_UNBOUND])
+AC_MSG_NOTICE([Linker flags for libleveldb: $LIB_LEVELDB])
+AC_MSG_NOTICE([Compiler flags for libleveldb: $INC_LEVELDB])
 
 AM_CONDITIONAL(
   [HSK_USE_ECMULT_STATIC_PRECOMPUTATION],

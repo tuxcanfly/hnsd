@@ -33,6 +33,7 @@ libhsk_la_SOURCES = src/addr.c                   \
                     src/brontide.c               \
                     src/chacha20/chacha20.c      \
                     src/chain.c                  \
+                    src/chaindb.c                \
                     src/dns.c                    \
                     src/dnssec.c                 \
                     src/ecc.c                    \
@@ -69,6 +70,7 @@ hnsd_SOURCES = src/cache.c  \
                src/signals.c
 
 hnsd_LDADD = $(LIB_UNBOUND)             \
+             $(LIB_LEVELDB)             \
              $(top_builddir)/libhsk.la
 
 hnsd_LDFLAGS = -static

@@ -10,6 +10,7 @@
 #include "addrmgr.h"
 #include "brontide.h"
 #include "chain.h"
+#include "chaindb.h"
 #include "ec.h"
 #include "header.h"
 #include "map.h"
@@ -92,6 +93,7 @@ typedef struct hsk_pool_s {
   uint8_t pubkey[33];
   hsk_timedata_t td;
   hsk_chain_t chain;
+  hsk_chaindb_t chaindb;
   hsk_addrman_t am;
   uv_timer_t *timer;
   uint64_t peer_id;

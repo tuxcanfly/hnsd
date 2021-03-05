@@ -16,6 +16,7 @@
 #include "bn.h"
 #include "brontide.h"
 #include "chain.h"
+#include "chaindb.h"
 #include "constants.h"
 #include "ec.h"
 #include "error.h"
@@ -161,6 +162,7 @@ hsk_pool_init(hsk_pool_t *pool, const uv_loop_t *loop) {
   pool->key = &pool->key_[0];
   hsk_timedata_init(&pool->td);
   hsk_chain_init(&pool->chain, &pool->td);
+  hsk_chaindb_init(&pool->chaindb);
   hsk_addrman_init(&pool->am, &pool->td);
   pool->timer = NULL;
   pool->peer_id = 0;
@@ -204,6 +206,7 @@ hsk_pool_uninit(hsk_pool_t *pool) {
 
   hsk_map_uninit(&pool->peers);
   hsk_chain_uninit(&pool->chain);
+  hsk_chaindb_uninit(&pool->chaindb);
   hsk_addrman_uninit(&pool->am);
   hsk_timedata_uninit(&pool->td);
 }
@@ -333,6 +336,8 @@ hsk_pool_open(hsk_pool_t *pool) {
 
   hsk_pool_refill(pool);
 
+  hsk_chaindb_open(&pool->chaindb);
+
   return HSK_SUCCESS;
 }
 
@@ -346,6 +351,8 @@ hsk_pool_close(hsk_pool_t *pool) {
 
   hsk_uv_close_free((uv_handle_t*)pool->timer);
   pool->timer = NULL;
+
+  hsk_chaindb_close(&pool->chaindb);
 
   return HSK_SUCCESS;
 }
